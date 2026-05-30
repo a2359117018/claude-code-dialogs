@@ -27,6 +27,8 @@ https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/skills/SK
 
 The AI reads `SKILL.md` and installs everything automatically — no manual steps.
 
+> If `raw.githubusercontent.com` is unreachable, use `git clone` as fallback (see SKILL.md for details).
+
 ### Manual
 
 1. Clone the repo

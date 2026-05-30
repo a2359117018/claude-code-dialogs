@@ -1,42 +1,41 @@
 # Claude Code Windows Hooks — Install Skill
 
-You are helping the user install Claude Code Windows GUI hooks.
+Install native Windows GUI hooks for Claude Code. Zero external dependencies — just Python 3.10+ with tkinter.
 
-## What This Installs
+## Step 1: Create directory
 
-Four native Windows GUI hooks for Claude Code CLI — zero external dependencies, powered by Python + tkinter.
+Create `~/.claude/hooks/scripts/` if it does not exist. (`~` expands to user home directory.)
 
-| Hook | Event | Function |
-|------|-------|----------|
-| `permission_request.pyw` | `PermissionRequest` | Allow/Deny dialog with suggestion buttons |
-| `ask_user_question.pyw` | `PreToolUse` → `AskUserQuestion` | Native option dialog (single/multi select) |
-| `stop_notify.pyw` | `Stop` | OSC 9 terminal notification |
-| `exit_plan_mode_notify.pyw` | `PermissionRequest` → `ExitPlanMode` | Topmost messagebox (auto-closes 25s) |
+## Step 2: Fetch hook scripts
 
-## Installation Steps
+Fetch each file and save to `~/.claude/hooks/scripts/`:
 
-### Step 1: Create target directory
+| File | URL |
+|------|-----|
+| `permission_request.pyw` | `https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/hooks/permission_request.pyw` |
+| `ask_user_question.pyw` | `https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/hooks/ask_user_question.pyw` |
+| `stop_notify.pyw` | `https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/hooks/stop_notify.pyw` |
+| `exit_plan_mode_notify.pyw` | `https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/hooks/exit_plan_mode_notify.pyw` |
 
-Create `~/.claude/hooks/scripts/` if it does not exist.
+### Fallback: git clone
 
-### Step 2: Download hook scripts
+If `raw.githubusercontent.com` is unreachable:
 
-Download these 4 files (via `curl`, `wget`, or Python `urllib`) to `~/.claude/hooks/scripts/`:
+1. `git clone https://github.com/a2359117018/claude-code-dialogs.git` into a temp directory
+2. Copy `hooks/*.pyw` (4 files) to `~/.claude/hooks/scripts/`
+3. Delete the temp directory
 
-```
-https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/hooks/permission_request.pyw
-https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/hooks/ask_user_question.pyw
-https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/hooks/stop_notify.pyw
-https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/hooks/exit_plan_mode_notify.pyw
-```
+## Step 3: Configure settings.json
 
-After downloading, verify all 4 files exist and are non-empty.
+Read `~/.claude/settings.json`. Apply the following rules:
 
-### Step 3: Configure `~/.claude/settings.json`
+- If the file does not exist or has no `"hooks"` key → write the full config below
+- If `"hooks"` exists → merge by event name:
+  - For each event (`PermissionRequest`, `PreToolUse`, `Stop`): if the event key is missing, add it; if it exists, append entries that don't already match by `matcher`
+  - For `PermissionRequest`: remove any existing entry with `matcher: "ExitPlanMode"` before adding the new one
+  - Never delete existing hook entries that are not part of this install
 
-Read the existing `~/.claude/settings.json`. If it has no `"hooks"` key, add the entire block below. If it already has `"hooks"`, **merge** — do NOT overwrite existing hook entries.
-
-Target `settings.json` must contain:
+Target config to merge:
 
 ```json
 {
@@ -86,31 +85,18 @@ Target `settings.json` must contain:
 }
 ```
 
-**Notes**:
-- Use `pythonw` (not `python`) to prevent console window flash.
-- `~` is expanded by Claude Code automatically; keep it as `~`.
+Note: Use `pythonw` (not `python`) to prevent console window flash. Keep `~` as-is — Claude Code expands it automatically.
 
-### Step 4: Verify
+## Step 4: Verify
 
-Run these checks:
+1. All 4 `.pyw` files exist and are non-empty in `~/.claude/hooks/scripts/`
+2. `~/.claude/settings.json` is valid JSON
+3. `hooks.PermissionRequest`, `hooks.PreToolUse`, `hooks.Stop` are all present in settings
 
-1. All 4 `.pyw` files exist in `~/.claude/hooks/scripts/`
-2. `pythonw --version` returns Python 3.10+
-3. `pythonw -c "import tkinter; print('ok')"` prints `ok`
-4. `~/.claude/settings.json` is valid JSON
-5. `hooks.PermissionRequest`, `hooks.PreToolUse`, `hooks.Stop` all present in settings
-
-### Step 5: Report
+## Step 5: Report
 
 Tell the user:
-- Which files were downloaded
-- Whether settings.json was created new or merged
-- Any warnings (e.g. tkinter unavailable, old hooks overwritten)
-- They must **restart Claude Code session** for hooks to take effect
-
-## Troubleshooting
-
-- **Console flash**: `command` must use `pythonw`, not `python`
-- **No dialog**: `pythonw -c "import tkinter"` fails → tkinter not installed
-- **Hooks not triggering**: Restart Claude Code — hooks load at session start
-- **OSC 9 notification not showing**: Needs modern terminal (Windows Terminal / WezTerm); legacy cmd.exe does not support OSC 9
+- Which files were fetched
+- Whether settings.json was created or merged
+- Any warnings (e.g. tkinter unavailable, fetch failed and fell back to git clone)
+- **Restart Claude Code session** for hooks to take effect
