@@ -7,7 +7,7 @@ Triggered via settings.json:
   PreToolUse -> matcher: "AskUserQuestion"
 
 Reads JSON from stdin (UTF-8), shows question dialog with native
-Radiobutton (single select) or Checkbutton (multi select),
+Checkbutton (single select with mutual exclusion) or Checkbutton (multi select),
 outputs JSON decision to stdout.
 
 Output format (per docs):

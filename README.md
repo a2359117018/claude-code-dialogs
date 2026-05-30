@@ -19,7 +19,7 @@ Replace Claude Code's terminal permission prompts with native Windows GUI dialog
 
 ### One-click (share URL with AI)
 
-Share this URL with your AI assistant (Claude Code / ChatGPT / etc.):
+Share this URL with your Claude Code:
 
 ```
 https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/skills/SKILL.md
