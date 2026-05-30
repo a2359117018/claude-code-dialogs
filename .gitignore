@@ -27,5 +27,6 @@ Thumbs.db
 .DS_Store
 desktop.ini
 
-# WorkBuddy
+# WorkBuddy / Claude
 .workbuddy/
+.claude/

@@ -17,9 +17,15 @@ Replace Claude Code's terminal permission prompts with native Windows GUI dialog
 
 ## Install
 
-### One-click (AI install)
+### One-click (share URL with AI)
 
-Copy the entire content of [`AI_SETUP_GUIDE.md`](AI_SETUP_GUIDE.md), paste it to your AI assistant, and say "帮我安装". Done.
+Share this URL with your AI assistant (Claude Code / ChatGPT / etc.):
+
+```
+https://raw.githubusercontent.com/a2359117018/claude-code-dialogs/main/skills/SKILL.md
+```
+
+The AI reads `SKILL.md` and installs everything automatically — no manual steps.
 
 ### Manual
 
